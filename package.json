@@ -1,0 +1,19 @@
+{
+  "name": "game.io",
+  "version": "0.0.1",
+  "description": "A simple .io game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thewildnath/game.io.git"
+  },
+  "author": "Nathan Wildenberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thewildnath/game.io/issues"
+  },
+  "homepage": "https://github.com/thewildnath/game.io#readme"
+}
