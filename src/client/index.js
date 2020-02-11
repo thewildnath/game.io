@@ -1,8 +1,6 @@
-import socketio from 'socket.io-client';
+import {connect} from './networking.js';
+import {startRendering} from './rendering.js';
 
-const socketProtocol = (window.location.protocol === 'https') ? 'wss' : 'ws';
-const socket = socketio(`${socketProtocol}://${window.location.host}`, {reconnection: false});
-
-socket.on('connect', () => {
-    console.log('Connected to server!');
+connect.then(() => {
+    startRendering();
 });
