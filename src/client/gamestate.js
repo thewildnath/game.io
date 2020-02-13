@@ -1,4 +1,6 @@
-const CONST = require('../shared/constants');
+// @flow
+
+const CONST = require('../core/constants');
 
 let gameUpdates = [];
 let firstLocalTimestamp = 0;
@@ -26,12 +28,12 @@ export function processGameUpdate(update) {
 }
 
 // Returns {player, others, bullets}
-export function getCurrentState() {
+export function getCurrentState(): GameState {
   if (!firstServerTimestamp) {
     return {};
   }
 
-  const serverTime = getServerTime();
+  // const serverTime = getServerTime();
   const baseUpdateId = getBaseUpdateId();
 
   // If other updates are too old, return the last one

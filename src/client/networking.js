@@ -1,8 +1,10 @@
+// @flow
+
 import socketio from 'socket.io-client';
 
-import { processGameUpdate } from './state';
+import { processGameUpdate } from './gamestate';
 
-const CONST = require('../shared/constants');
+const CONST = require('../core/constants');
 
 const socketProtocol = (window.location.protocol === 'https') ? 'wss' : 'ws';
 const socket = socketio(`${socketProtocol}://${window.location.host}`, { reconnection: false });
@@ -27,6 +29,6 @@ export const connect = (
   })
 );
 
-export const joinGame = (username) => {
+export const joinGame = (username: string) => {
   socket.emit(CONST.MSG_TYPES.JOIN_GAME, username);
 };

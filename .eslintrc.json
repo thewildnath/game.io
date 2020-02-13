@@ -1,11 +1,19 @@
 {
-    "extends": "airbnb-base",
+    "extends": [
+        "airbnb-base",
+        "plugin:flowtype/recommended"
+    ],
+    "parser": "babel-eslint",
+    "plugins": [
+        "flowtype"
+    ],
     "env": {
         "browser": true,
         "node": true
     },    
     "rules": {
         "linebreak-style": ["error", "windows"],
-        "no-use-before-define": ["error", {"functions": false}]
+        "no-use-before-define": ["error", {"functions": false}],
+        "lines-between-class-members": ["error", "always", {"exceptAfterSingleLine": true}]
     }
 }

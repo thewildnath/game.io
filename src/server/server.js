@@ -1,3 +1,5 @@
+// @flow
+
 const express = require('express');
 const socketio = require('socket.io');
 const webpack = require('webpack');

@@ -1,9 +1,12 @@
-import { getCurrentState } from './state';
+// @flow
 
-const CONST = require('../shared/constants');
+import { getCurrentState } from './gamestate';
+
+const CONST = require('../core/constants');
 
 // Get the canvas graphics context
-const canvas = document.getElementById('game-canvas');
+// $FlowFixMe.
+const canvas: HTMLCanvasElement = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 
 // TODO: Initially render the main menu
@@ -22,7 +25,7 @@ export function stopRendering() {
 }
 
 function renderGame() {
-  const { player, others, bullets } = getCurrentState();
+  const { player } = getCurrentState();
 
   renderPlayer(player);
 }
