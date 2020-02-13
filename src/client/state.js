@@ -51,7 +51,7 @@ function getBaseUpdateId() {
 
   while (baseUpdateId < gameUpdates.length
             && gameUpdates[baseUpdateId].t <= serverTime) {
-    ++baseUpdateId;
+    baseUpdateId += 1;
   }
 
   return baseUpdateId - 1;

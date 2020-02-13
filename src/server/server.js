@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 // Listen on port
 const port = process.env.PORT || 3000;
 const server = app.listen(port);
+// eslint-disable-next-line no-console
 console.log('Server listening on port ', port);
 
 // Setup socket.io
@@ -27,5 +28,6 @@ const io = socketio(server);
 
 // Listen for socket.io connections
 io.on('connection', (socket) => {
+  // eslint-disable-next-line no-console
   console.log('Player connected: ', socket.id);
 });

@@ -4,7 +4,7 @@
   "description": "A simple .io game.",
   "main": "src/server/server.js",
   "scripts": {
-    "lint": "eslint src/** src/**/** --fix",
+    "lint": "eslint **/*.js --ignore-pattern node_modules/ --fix",
     "dev": "cross-env NODE_ENV=development node src/server/server.js",
     "prod": "cross-env NODE_ENV=production node src/server/server.js"
   },
