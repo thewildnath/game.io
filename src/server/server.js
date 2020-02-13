@@ -1,20 +1,20 @@
 const express = require('express');
 const socketio = require('socket.io');
 const webpack = require('webpack');
-const webpackConfig = require('../../webpack.dev.js');
 const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackConfig = require('../../webpack.dev.js');
 
 // Setup an Express server
 const app = express();
 app.use(express.static('public'));
 
 if (process.env.NODE_ENV === 'development') {
-    // Setup webpack for development
-    const compiler = webpack(webpackConfig);
-    app.use(webpackDevMiddleware(compiler));
+  // Setup webpack for development
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler));
 } else {
-    // Static serve
-    app.use(express.static('dist'));
+  // Static serve
+  app.use(express.static('dist'));
 }
 
 // Listen on port
@@ -26,6 +26,6 @@ console.log('Server listening on port ', port);
 const io = socketio(server);
 
 // Listen for socket.io connections
-io.on('connection', socket => {
-    console.log('Player connected: ', socket.id);
+io.on('connection', (socket) => {
+  console.log('Player connected: ', socket.id);
 });

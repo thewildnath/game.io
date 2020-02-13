@@ -1,6 +1,6 @@
-import {connect} from './networking.js';
-import {startRendering} from './rendering.js';
+import { connect } from './networking';
+import { startRendering } from './rendering';
 
 connect.then(() => {
-    startRendering();
+  startRendering();
 });

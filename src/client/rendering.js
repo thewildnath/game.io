@@ -1,4 +1,4 @@
-import {getCurrentState} from './state';
+import { getCurrentState } from './state';
 
 const CONST = require('../shared/constants');
 
@@ -13,30 +13,30 @@ let renderInterval;
 // TODO: Scale camera dynamically based on resolution/aspect
 
 export function startRendering() {
-    clearInterval(renderInterval);
-    renderInterval = setInterval(renderGame, 1000 / CONST.FRAME_RATE);
+  clearInterval(renderInterval);
+  renderInterval = setInterval(renderGame, 1000 / CONST.FRAME_RATE);
 }
 
 export function stopRendering() {
-    clearInterval(renderInterval);
+  clearInterval(renderInterval);
 }
 
 function renderGame() {
-    const {player, others, bullets} = getCurrentState();
+  const { player, others, bullets } = getCurrentState();
 
-    renderPlayer(player);
+  renderPlayer(player);
 }
 
 function renderPlayer(player) {
-      var centerX = canvas.width / 2 + player.x;
-      var centerY = canvas.height / 2 + player.y;
-      var radius = 70;
+  const centerX = canvas.width / 2 + player.x;
+  const centerY = canvas.height / 2 + player.y;
+  const radius = 70;
 
-      context.beginPath();
-      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-      context.fillStyle = 'green';
-      context.fill();
-      context.lineWidth = 5;
-      context.strokeStyle = '#003300';
-      context.stroke();
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+  context.fillStyle = 'green';
+  context.fill();
+  context.lineWidth = 5;
+  context.strokeStyle = '#003300';
+  context.stroke();
 }

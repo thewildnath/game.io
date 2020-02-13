@@ -4,7 +4,7 @@
   "description": "A simple .io game.",
   "main": "src/server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/** src/**/** --fix",
     "dev": "cross-env NODE_ENV=development node src/server/server.js",
     "prod": "cross-env NODE_ENV=production node src/server/server.js"
   },
@@ -26,8 +26,13 @@
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
+    "@babel/preset-flow": "^7.8.3",
     "babel-loader": "^8.0.6",
     "cross-env": "^7.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.1",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "path": "^0.12.7",
