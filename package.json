@@ -2,12 +2,16 @@
   "name": "game.io",
   "version": "0.0.1",
   "description": "A simple .io game.",
+  "type": "module",
   "main": "src/server/server.js",
   "scripts": {
     "lint": "eslint **/*.js --ignore-pattern node_modules/ --fix",
     "flow": "flow",
+    "build": "babel src/server/server.js -d dist",
     "dev": "cross-env NODE_ENV=development node src/server/server.js",
-    "prod": "cross-env NODE_ENV=production node src/server/server.js"
+    "prod": "cross-env NODE_ENV=production node src/server/server.js",
+    "bdev": "npm run build && cross-env NODE_ENV=development node dist/server.js",
+    "bprod": "npm run build && cross-env NODE_ENV=production node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +29,9 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-flow": "^7.8.3",
     "babel-eslint": "^10.0.3",

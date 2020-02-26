@@ -1,10 +1,12 @@
 // @flow
 
-const express = require('express');
-const socketio = require('socket.io');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackConfig = require('../../webpack.dev.js');
+import express from 'express';
+import socketio from 'socket.io';
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackConfig from '../../webpack.dev.js';
+
+// import * as E from '../engine/Engine';
 
 // Setup an Express server
 const app = express();
@@ -33,3 +35,9 @@ io.on('connection', (socket) => {
   // eslint-disable-next-line no-console
   console.log('Player connected: ', socket.id);
 });
+
+
+// for (let i = 1; i <= 100; i += 1) {
+//   // eslint-disable-next-line no-console
+//   console.log(E.root.performance.now());
+// }

@@ -1,6 +1,6 @@
 // @flow
 
-interface ISystem<P = {}> {
+export interface ISystem<P = {}> {
   props: P;
   enabled: boolean;
 

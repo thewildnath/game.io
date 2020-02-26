@@ -1,24 +1,22 @@
 // @flow
 
-/* Container for all Game configurations */
+import Time from './time/Time.js';
+// import { getValue } from '../utils/Utils';
 
-export type GameConfig = {|
-  targetFPS: number;
-  targetFixedFPS: number;
-|};
+/* Main game manager */
 
-const defaultGameConfig: GameConfig = {
-  targetFPS: 60,
-  targetFixedFPS: 60,
-};
+export default class Game {
+  static init(config: any) {
+    // Initialise the timer module
+    Time.init(config);
+  }
 
-/* Main class, game manager */
+  static start() {
+    Time.start(Game.update);
+  }
 
-export class Game {
-  config: GameConfig;
-
-  constructor(config: GameConfig) {
-    this.config = defaultGameConfig;
-    Object.assign(this.config, config);
+  static update(timestamp: number) {
+    // eslint-disable-next-line no-console
+    console.log('update: ', timestamp);
   }
 }

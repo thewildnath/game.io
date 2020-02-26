@@ -1,11 +1,15 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-module.exports = {
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const config = {
   context: __dirname,
   entry: {
-    game: './src/client/index.js',
+    client: './src/client/index.js',
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -54,3 +58,5 @@ module.exports = {
     }),
   ],
 };
+
+export default config;
