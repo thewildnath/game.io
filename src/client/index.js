@@ -17,5 +17,5 @@ import * as E from '../engine/Engine.js';
 
 for (let i = 1; i <= 100; i += 1) {
   // eslint-disable-next-line no-console
-  console.log(E.root.performance.now());
+  console.log(E.Time.now());
 }

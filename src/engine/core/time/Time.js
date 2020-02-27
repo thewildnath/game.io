@@ -1,5 +1,6 @@
 // @flow
 
+import perfNow from './performance.js';
 import { getValue } from '../../utils/Utils.js';
 
 type TIMER_MECHANISM = 'default' | 'raf' | 'timeout';
@@ -25,6 +26,7 @@ export default class Time {
   // The function to be called on each update
   static update: number => void;
 
+  static now = perfNow;
 
   static init(config: any) {
     // If value is default, the timer will either match the environment's
