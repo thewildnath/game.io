@@ -1,6 +1,7 @@
 // @flow
 
 import perfNow from './performance.js';
+import root from '../root.js';
 import { getValue } from '../../utils/Utils.js';
 
 type TIMER_MECHANISM = 'default' | 'raf' | 'timeout';
@@ -8,7 +9,9 @@ type TIMER_MECHANISM = 'default' | 'raf' | 'timeout';
 /* Timing manager */
 
 export default class Time {
-  // static timerMechanism: TIMER_MECHANISM;
+  // The timer mechanism that the update loop uses
+  static timerMechanism: TIMER_MECHANISM;
+
   // The default frame rate of the engine
   static targetFrameRate: number;
   static targetDeltaTime: number;
@@ -19,6 +22,7 @@ export default class Time {
 
   // The function used for continously updating
   static requestAnimationFrame: ((number) => void) => any;
+  static cancelAnimationFrame: (any) => void;
   static rafHandle: any;
 
   static lastTimestamp: number;
@@ -32,12 +36,12 @@ export default class Time {
     // If value is default, the timer will either match the environment's
     // refresh rate or it will run as fast as possible
     Time.targetFrameRate = getValue(-1, config.targetFrameRate);
-    Time.targetDeltaTime = 1 / Time.targetFrameRate;
+    Time.targetDeltaTime = 1000 / Time.targetFrameRate;
 
     Time.fixedFrameRate = getValue(50, config.fixedFrameRate);
     Time.fixedDeltaTime = 1 / Time.fixedFrameRate;
 
-    Time.requestAnimationFrame = Time.getStepFunction(getValue('default', config.timerMechanism));
+    Time.requestAnimationFrame = Time.getRafFunction(getValue('default', config.timerMechanism));
   }
 
   static start(update: number => void) {
@@ -53,7 +57,7 @@ export default class Time {
   }
 
   static stop() {
-
+    Time.cancelAnimationFrame(Time.rafHandle);
   }
 
   static step(timestamp: number) {
@@ -72,39 +76,70 @@ export default class Time {
 
   // By default try to use requestAnimationFrame
   // If not possible, fallback to custom function using setInterval
-  static getStepFunction(timerMechanism: TIMER_MECHANISM): ((number) => void) => any {
-    let mechanism: TIMER_MECHANISM = timerMechanism;
-    // TODO: 'default' should pick 'timeout' if 'raf' is not available
-    if (mechanism === 'default') {
-      mechanism = 'raf';
+  static getRafFunction(timerMechanism: TIMER_MECHANISM): ((number) => void) => any {
+    const rootRequestAnimationFrame = root.requestAnimationFrame // Chromium
+      || root.webkitRequestAnimationFrame // Webkit
+      || root.mozRequestAnimationFrame// Mozilla Geko
+      || root.oRequestAnimationFrame // Opera Presto
+      || root.msRequestAnimationFrame; // IE Trident
+
+    if (root.cancelAnimationFrame != null) {
+      Time.cancelAnimationFrame = root.cancelAnimationFrame.bind(root);
     }
-    if (mechanism === 'raf') {
-      if (window != null && window.requestAnimationFrame != null) {
+
+    if (timerMechanism === 'default' && rootRequestAnimationFrame != null) {
+      // eslint-disable-next-line no-console
+      console.log('Timer: raf');
+      Time.timerMechanism = 'raf';
+      return rootRequestAnimationFrame.bind(root);
+    }
+
+    if (timerMechanism === 'raf') {
+      if (rootRequestAnimationFrame) {
         // eslint-disable-next-line no-console
         console.log('Timer: raf');
-        return window.requestAnimationFrame;
+        Time.timerMechanism = 'raf';
+        return window.requestAnimationFrame.bind(root);
       }
       throw new Error('Could not find \'window.requestAnimationFrame\'');
     }
 
     // eslint-disable-next-line no-console
     console.log('Timer: timeout');
+    Time.timerMechanism = 'timeout';
 
-    return (function rafShell() {
-      let lastTimestamp: number = Date.now();
-      let now: number;
-      let timeout: number;
-      return function requestAnimationFrame(callback: (number) => void) {
-        now = Date.now();
-        // The next frame should run no sooner than the simulation allows,
-        // but as soon as possible if the current frame has already taken
-        // more time to run than is simulated in one timestep.
-        timeout = Math.max(0, Time.targetDeltaTime - (now - lastTimestamp));
-        lastTimestamp = now + timeout;
-        return setTimeout(() => {
-          callback(now + timeout);
-        }, timeout);
-      };
-    }());
+    Time.cancelAnimationFrame = clearTimeout.bind(root);
+
+    let lastTimestamp: number = Time.now();
+    let now: number;
+    let timeout: number;
+    return function requestAnimationFrame(callback: (number) => void) {
+      now = Time.now();
+      // The next frame should run no sooner than the simulation allows,
+      // but as soon as possible if the current frame has already taken
+      // more time to run than is simulated in one timestep.
+      timeout = Math.max(0, Time.targetDeltaTime - (now - lastTimestamp));
+      lastTimestamp = now + timeout;
+      return setTimeout(() => {
+        callback(now + timeout);
+      }, timeout);
+    };
+
+    // return (function rafShell() {
+    //   let lastTimestamp: number = Time.now();
+    //   let now: number;
+    //   let timeout: number;
+    //   return function requestAnimationFrame(callback: (number) => void) {
+    //     now = Time.now();
+    //     // The next frame should run no sooner than the simulation allows,
+    //     // but as soon as possible if the current frame has already taken
+    //     // more time to run than is simulated in one timestep.
+    //     timeout = Math.max(0, Time.targetDeltaTime - (now - lastTimestamp));
+    //     lastTimestamp = now + timeout;
+    //     return setTimeout(() => {
+    //       callback(now + timeout);
+    //     }, timeout);
+    //   };
+    // }());
   }
 }

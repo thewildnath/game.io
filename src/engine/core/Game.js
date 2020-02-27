@@ -15,8 +15,13 @@ export default class Game {
     Time.start(Game.update);
   }
 
+  static frameCount = 0;
   static update(timestamp: number) {
-    // eslint-disable-next-line no-console
-    console.log('update: ', timestamp);
+    Game.frameCount += 1;
+
+    if (Game.frameCount % 10 === 0) {
+      // eslint-disable-next-line no-console
+      console.log('Frame ', Game.frameCount, ': ', timestamp);
+    }
   }
 }

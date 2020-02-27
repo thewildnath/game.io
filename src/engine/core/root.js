@@ -1,9 +1,6 @@
 /* eslint-disable */
 
-let root;
-
-(function() {
-  root = this;
-}).call(this);
+// Asume either Node.js or browser
+const root = typeof window === 'undefined' ? global : window;
 
 export default root;
