@@ -8,8 +8,8 @@ E.Game.init({
   timerMechanism: 'default',
 });
 
-E.Game.start();
-
 console.log(E.Time.targetDeltaTime);
 
-setTimeout(() => { E.Time.stop(); console.log('Frame ', E.Game.frameCount); }, 1000 * 2);
+E.Game.start();
+
+setTimeout(() => { E.Time.stop(); }, 1000 * 10);

@@ -19,9 +19,6 @@ export default class Game {
   static update(timestamp: number) {
     Game.frameCount += 1;
 
-    if (Game.frameCount % 10 === 0) {
-      // eslint-disable-next-line no-console
-      console.log('Frame ', Game.frameCount, ': ', timestamp);
-    }
+    console.log('FPS: ', Time.fps, ' DT: ', Time.deltaTime);
   }
 }

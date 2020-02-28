@@ -20,23 +20,31 @@ export default class Time {
   static fixedFrameRate: number;
   static fixedDeltaTime: number;
 
+  // Curent framerate information
+  static deltaTime: number;
+  static carryOver: number;
+  static lastTimestamp: number;
+
   // The function used for continously updating
   static requestAnimationFrame: ((number) => void) => any;
   static cancelAnimationFrame: (any) => void;
   static rafHandle: any;
 
-  static lastTimestamp: number;
+  static fps: number;
+  static frameCount: number;
+  static firstTimestamp: number;
 
   // The function to be called on each update
   static update: number => void;
 
+  // TODO: Function should return 'game time', taking into account paused/background process
   static now = perfNow;
 
   static init(config: any) {
     // If value is default, the timer will either match the environment's
     // refresh rate or it will run as fast as possible
     Time.targetFrameRate = getValue(-1, config.targetFrameRate);
-    Time.targetDeltaTime = 1000 / Time.targetFrameRate;
+    Time.targetDeltaTime = Math.max(0, 1000 / Time.targetFrameRate);
 
     Time.fixedFrameRate = getValue(50, config.fixedFrameRate);
     Time.fixedDeltaTime = 1 / Time.fixedFrameRate;
@@ -50,6 +58,11 @@ export default class Time {
     // First initialise global variables, then start loop
     Time.rafHandle = Time.requestAnimationFrame((timestamp: number) => {
       Time.lastTimestamp = timestamp;
+      Time.carryOver = 0;
+
+      Time.fps = 0;
+      Time.frameCount = 0;
+      Time.firstTimestamp = timestamp;
 
       // Start the main loop
       Time.rafHandle = Time.requestAnimationFrame(Time.step);
@@ -60,18 +73,25 @@ export default class Time {
     Time.cancelAnimationFrame(Time.rafHandle);
   }
 
+  // Main timer loop
   static step(timestamp: number) {
-    // Run again when ready
     Time.rafHandle = Time.requestAnimationFrame(Time.step);
 
-    // Throttle frame rate
-    if (timestamp < Time.lastTimestamp + Time.targetDeltaTime) {
-      return;
+    const elapsed = timestamp - Time.lastTimestamp;
+
+    if (elapsed > Time.targetDeltaTime) {
+      Time.deltaTime = elapsed + Time.carryOver;
+
+      const adjust = elapsed % Time.targetDeltaTime;
+      Time.carryOver = adjust;
+      Time.lastTimestamp = timestamp - adjust;
+
+      // Calculate fps
+      Time.frameCount += 1;
+      Time.fps = (1000 * Time.frameCount) / (timestamp - Time.firstTimestamp);
+
+      Time.update(timestamp);
     }
-
-    Time.lastTimestamp = timestamp;
-
-    Time.update(timestamp);
   }
 
   // By default try to use requestAnimationFrame
