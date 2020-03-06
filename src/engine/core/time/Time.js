@@ -22,9 +22,6 @@ export default class Time {
 
   // Curent framerate information
   static deltaTime: number;
-  static lastFrameUpdated: boolean;
-  static carryOver: number;
-  static accumulator: number;
   static lastTimestamp: number;
 
   // The function used for continously updating
@@ -38,9 +35,6 @@ export default class Time {
 
   // The function to be called on each update
   static update: number => void;
-
-  // TODO: Function should return 'game time', taking into account paused/background process
-  static now = perfNow;
 
   static init(config: any) {
     // If value is default, the timer will either match the environment's
@@ -59,10 +53,7 @@ export default class Time {
 
     // First initialise global variables, then start loop
     Time.rafHandle = Time.requestAnimationFrame((timestamp: number) => {
-      Time.lastFrameUpdated = false;
       Time.lastTimestamp = timestamp;
-      Time.carryOver = 0;
-      Time.accumulator = 0;
 
       Time.fps = 0;
       Time.frameCount = 0;
@@ -78,18 +69,18 @@ export default class Time {
   }
 
   // Main timer loop
-  static step(/* timestamp: number */) {
-    const timestamp: number = Time.now();
+  static step() {
+    // RaF might use the timestamp when the whole page started re-rendering,
+    // meaning that it can be behind the real time.
+    const timestamp: number = Time.realNow();
 
     Time.rafHandle = Time.requestAnimationFrame(Time.step);
 
     const elapsed = timestamp - Time.lastTimestamp;
 
     if (elapsed > Time.targetDeltaTime) {
-      Time.deltaTime = elapsed;
-
       const adjust = elapsed % Time.targetDeltaTime;
-      Time.carryOver = adjust;
+      Time.deltaTime = elapsed - adjust;
       Time.lastTimestamp = timestamp - adjust;
 
       // Calculate fps
@@ -98,58 +89,15 @@ export default class Time {
 
       Time.update(timestamp);
     }
-
-
-    // Time.rafHandle = Time.requestAnimationFrame(Time.step);
-
-    // const elapsed = timestamp - Time.lastTimestamp;
-
-    // if (elapsed > Time.targetDeltaTime) {
-    //   // console.log('accepted: ', elapsed);
-    //   // If the last frame was an update, assume deltaFrame is equal to elapsed.
-    //   // Else assume we are not synchronised with raf and try to catch on.
-    //   if (Time.lastFrameUpdated) {
-    //     console.log('accepted: ', elapsed, ' slow');
-    //     Time.deltaTime = elapsed;
-    //     Time.lastTimestamp = timestamp;
-    //   } else {
-    //     console.log('accepted: ', elapsed, ' catch-up');
-    //     Time.deltaTime = Time.targetDeltaTime;
-    //     const adjust = Time.targetDeltaTime === 0 ? 0 : elapsed % Time.targetDeltaTime;
-    //     Time.lastTimestamp = timestamp - adjust;
-    //   }
-
-    //   Time.lastFrameUpdated = true;
-
-    //   // Calculate fps
-    //   Time.frameCount += 1;
-    //   Time.fps = (1000 * Time.frameCount) / (timestamp - Time.firstTimestamp);
-
-    //   Time.update(timestamp);
-    // } else {
-    //   Time.lastFrameUpdated = false;
-    //   console.log('skip: ', elapsed);
-    // }
-
-
-    // Time.rafHandle = Time.requestAnimationFrame(Time.step);
-
-    // const elapsed = timestamp - Time.lastTimestamp;
-
-    // if (elapsed > Time.targetDeltaTime) {
-    //   Time.deltaTime = elapsed + Time.carryOver;
-
-    //   const adjust = elapsed % Time.targetDeltaTime;
-    //   Time.carryOver = adjust;
-    //   Time.lastTimestamp = timestamp - adjust;
-
-    //   // Calculate fps
-    //   Time.frameCount += 1;
-    //   Time.fps = (1000 * Time.frameCount) / (timestamp - Time.firstTimestamp);
-
-    //   Time.update(timestamp);
-    // }
   }
+
+  // Returns current game-time
+  static now(): number {
+    return Time.lastTimestamp;
+  }
+
+  // Returns current real-time
+  static realNow = perfNow;
 
   // By default try to use requestAnimationFrame
   // If not possible, fallback to custom function using setInterval
@@ -187,36 +135,16 @@ export default class Time {
 
     Time.cancelAnimationFrame = clearTimeout.bind(root);
 
-    let lastTimestamp: number = Time.now();
+    let lastTimestamp: number = Time.realNow();
     let now: number;
     let timeout: number;
     return function requestAnimationFrame(callback: (number) => void) {
-      now = Time.now();
-      // The next frame should run no sooner than the simulation allows,
-      // but as soon as possible if the current frame has already taken
-      // more time to run than is simulated in one timestep.
+      now = Time.realNow();
       timeout = Math.max(0, Time.targetDeltaTime - (now - lastTimestamp));
       lastTimestamp = now + timeout;
       return setTimeout(() => {
         callback(now + timeout);
       }, timeout);
     };
-
-    // return (function rafShell() {
-    //   let lastTimestamp: number = Time.now();
-    //   let now: number;
-    //   let timeout: number;
-    //   return function requestAnimationFrame(callback: (number) => void) {
-    //     now = Time.now();
-    //     // The next frame should run no sooner than the simulation allows,
-    //     // but as soon as possible if the current frame has already taken
-    //     // more time to run than is simulated in one timestep.
-    //     timeout = Math.max(0, Time.targetDeltaTime - (now - lastTimestamp));
-    //     lastTimestamp = now + timeout;
-    //     return setTimeout(() => {
-    //       callback(now + timeout);
-    //     }, timeout);
-    //   };
-    // }());
   }
 }

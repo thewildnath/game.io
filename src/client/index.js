@@ -3,7 +3,7 @@
 import * as E from '../engine/Engine.js';
 
 E.Game.init({
-  targetFrameRate: 240,
+  targetFrameRate: 60,
   fixedFrameRate: 60,
   timerMechanism: 'default',
 });
