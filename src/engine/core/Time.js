@@ -1,8 +1,8 @@
 // @flow
 
-import perfNow from './performance.js';
-import root from '../root.js';
-import { getValue } from '../../utils/Utils.js';
+import perfNow from './platform/performance.js';
+import root from './platform/root.js';
+import { getValue } from '../utils/Utils.js';
 
 type TIMER_MECHANISM = 'default' | 'raf' | 'timeout';
 
@@ -69,7 +69,7 @@ export default class Time {
   }
 
   // Main timer loop
-  static step() {
+  static step(/* timestamp: number */) {
     // RaF might use the timestamp when the whole page started re-rendering,
     // meaning that it can be behind the real time.
     const timestamp: number = Time.realNow();
