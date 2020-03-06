@@ -24,14 +24,15 @@ export default class Time {
   static deltaTime: number;
   static lastTimestamp: number;
 
+  // Measurement information
+  static fps: number;
+  static frameCount: number;
+  static firstTimestamp: number;
+
   // The function used for continously updating
   static requestAnimationFrame: ((number) => void) => any;
   static cancelAnimationFrame: (any) => void;
   static rafHandle: any;
-
-  static fps: number;
-  static frameCount: number;
-  static firstTimestamp: number;
 
   // The function to be called on each update
   static update: number => void;

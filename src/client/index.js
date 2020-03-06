@@ -12,4 +12,4 @@ console.log(E.Time.targetDeltaTime);
 
 E.Game.start();
 
-setTimeout(() => { E.Time.stop(); console.log('Frame: ', E.Game.frameCount, ' T: ', E.Time.now()); }, 1000 * 10);
+setTimeout(() => { E.Time.stop(); console.log('Frame: ', E.Time.frameCount, ' T: ', E.Time.now()); }, 1000 * 10);
