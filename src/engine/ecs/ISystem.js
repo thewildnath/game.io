@@ -5,8 +5,8 @@ export interface ISystem<P = {}> {
   enabled: boolean;
 
   onInitialise(props: P): void;
+  onUpdate(): void;
   onPause(): void;
   onResume(): void;
   onStop(): void;
-  onUpdate(): void;
 }

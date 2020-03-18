@@ -15,6 +15,7 @@
         "linebreak-style": ["error", "windows"],
         "no-use-before-define": ["error", {"functions": false}],
         "lines-between-class-members": ["error", "always", {"exceptAfterSingleLine": true}],
-        "import/extensions": ["error", "ignorePackages"]
+        "import/extensions": ["error", "ignorePackages"],
+        "no-param-reassign": ["error", {"props": false}]
     }
 }
