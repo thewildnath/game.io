@@ -6,8 +6,8 @@ import { Countable, Container } from '../utils/structures/Container.js';
 
 export default class Scene implements Countable {
   // Global information about all scenes
-  static scenes: Container<Scene>;
-  static default: number;
+  static scenes: Container<Scene> = new Container();
+  static default: number = 0;
 
 
   // Public scene information
@@ -27,7 +27,11 @@ export default class Scene implements Countable {
     init();
   }
 
-  // GameObject managment functions
+  setDefault() {
+    Scene.default = this.id;
+  }
+
+  /* PRIVATE/PROTECTED FUNCTIONS */
   add(gameObject: GameObject) {
     if (gameObject.scene !== undefined || gameObject.id !== undefined) {
       throw new Error('GameObject might already be initialised');
@@ -35,6 +39,10 @@ export default class Scene implements Countable {
 
     this.gameObjects.add(gameObject);
     gameObject.scene = this;
+
+    if (gameObject.parent == null) {
+      this.rootGameObjects.add(gameObject);
+    }
   }
 
   delete(key: number | GameObject) {

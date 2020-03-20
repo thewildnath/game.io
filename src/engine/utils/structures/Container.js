@@ -30,7 +30,7 @@ export class Container<T: Countable> {
   }
 
   add(object: T) {
-    if (object.id !== 0) {
+    if (object.id !== undefined) {
       throw new Error(`Object already has an id: ${object.id}`);
     }
 
